@@ -1,9 +1,23 @@
+#!/usr/bin/env python
+"""
+Energies
+
+Compute energies (kinetic or total)
+
+@ Author: Moussouni, Yaël (MSc student) & Bhat, Junaid Ramzan (MSc student)
+@ Institution:  Université de Strasbourg, CNRS, Observatoire astronomique
+                de Strasbourg, UMR 7550, F-67000 Strasbourg, France
+@ Date: 2024-12-13
+"""
+
 import numpy as np
 
 def kinetic(W: np.ndarray) -> np.ndarray:
     """Computes the kinetic energy.
-    :param W: Phase-space vectors
-    :returns T: Kinetic energy
+    @param 
+        - W: Phase-space vectors
+    @returns 
+        - T: Kinetic energy
     """
     U = W[1,0]
     V = W[1,1]

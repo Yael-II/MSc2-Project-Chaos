@@ -1,5 +1,27 @@
+#!/usr/bin/env python
+"""
+Poincaré Sections
+
+Computes the Poincaré Sections
+
+@ Author: Moussouni, Yaël (MSc student) & Bhat, Junaid Ramzan (MSc student)
+@ Institution:  Université de Strasbourg, CNRS, Observatoire astronomique
+                de Strasbourg, UMR 7550, F-67000 Strasbourg, France
+@ Date: 2024-11-29
+"""
+
 import numpy as np
 def pcs_find(pos_x, pos_y, vel_x, vel_y):
+    """Find Poincaré sections (PCS; x = 0)
+    @ params:
+        - pos_x: position along the x axis
+        - pos_y: position along the y axis
+        - pos_x: velocity along the x axis
+        - pos_y: velocity along the y axis
+    @ returns: (tuple)
+        - pcs_pos_y: position of the points in the PCS along the y axis
+        - pcs_vel_y: velocity of the points in the PCS along the y axis
+    """
     if np.ndim(pos_x) == 1: 
         pos_x = np.array([pos_x])
         pos_y = np.array([pos_y])
@@ -25,8 +47,10 @@ def pcs_find(pos_x, pos_y, vel_x, vel_y):
                 pcs_vel_y.append(v0)
             i += 1
     return pcs_pos_y, pcs_vel_y
+
 def pcs_find_legacy(pos_x, pos_y, vel_x, vel_y):
-    """Depreciated legacy function that should not be used
+    """DEPRECIATED - DO NOT USE
+    Depreciated legacy function that should not be used
     """
     if np.ndim(pos_x) == 1: 
         pos_x = np.array([pos_x])

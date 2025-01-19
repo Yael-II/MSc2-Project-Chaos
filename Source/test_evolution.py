@@ -64,6 +64,8 @@ if __name__ == "__main__":
     ax.set_ylabel("$y$")
     ax.set_aspect("equal")
 
+    plt.savefig("evolution.png")
+
     plt.show(block=True)
 
 

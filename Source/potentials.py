@@ -1,3 +1,15 @@
+#!/usr/bin/env python
+"""
+Potentials
+
+Functions of the different potentials (and their derivatives for the evolution)
+
+@ Author: Moussouni, Yaël (MSc student) & Bhat, Junaid Ramzan (MSc student)
+@ Institution:  Université de Strasbourg, CNRS, Observatoire astronomique
+                de Strasbourg, UMR 7550, F-67000 Strasbourg, France
+@ Date: 2024-11-29
+"""
+
 import numpy as np
 
 MAX_VAL = 1e3
@@ -11,7 +23,7 @@ def kepler_potential(W_grid: np.ndarray,
         - W: Phase-space vector
         - position_only: True if W is np.array([X, Y])
     @returns:
-        - V: computed potential
+        - computed potential
     """
     if position_only: 
         X = W_grid[0]
@@ -29,8 +41,11 @@ def kepler_potential(W_grid: np.ndarray,
 def hh_potential(W_grid: np.ndarray, 
                  position_only=False) -> np.ndarray:
     """Computes the Hénon-Heiles potential.
-    :param W: Phase-space vector
-    :output V: Potential
+    @params:
+        - W: Phase-space vector
+        - position_only: True if W is np.array([X, Y])
+    @returns:
+        - POT: Potential
     """
     if position_only:
         X = W_grid[0]
@@ -48,10 +63,12 @@ def hh_potential(W_grid: np.ndarray,
     return POT        
 
 def hh_evolution(t: np.ndarray, W: np.ndarray):
-    """Computes the evolution from the HH potential
-    :param t: Time (not used)
-    :param W: Phase space vector
-    :returns dot W: Time derivative of the phase space vector
+    """Computes the evolution from the HH potential derivative
+    @params
+        - t: Time (not used)
+        - W: Phase space vector
+    &returns 
+        - dot W: Time derivative of the phase space vector
     """
     X = W[0 ,0]
     Y = W[0, 1]

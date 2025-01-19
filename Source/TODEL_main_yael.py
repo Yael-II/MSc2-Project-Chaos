@@ -98,7 +98,7 @@ ax.set_xlabel("energy E")
 ax.set_ylabel("quantity mu")
 
 fig.tight_layout()
-fig.savefig("mu")
+# fig.savefig("mu")
 
 fig, ax = plt.subplots(1)
 ax.scatter(all_E, A, color="C0", s=5, marker="o", label="Data")
@@ -106,7 +106,7 @@ ax.set_xlabel("energy E")
 ax.set_ylabel("area A")
 ax.legend()
 fig.tight_layout()
-fig.savefig("area")
+# fig.savefig("area")
 plt.show()
 
 

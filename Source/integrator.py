@@ -1,7 +1,18 @@
+#!/usr/bin/env python
+"""
+Integrator
+
+Integrate differential equations.
+
+@ Author: Moussouni, Yaël (MSc student) & Bhat, Junaid Ramzan (MSc student)
+@ Institution:  Université de Strasbourg, CNRS, Observatoire astronomique
+                de Strasbourg, UMR 7550, F-67000 Strasbourg, France
+@ Date: 2024-11-29
+"""
 import numpy as np
 
 def euler(x0, y0, h, n, func): # FIXME cannot be used with vectors
-    """
+    """DEPRECIATED - DO NOT USE
     Euler method adapted for state vector [[x, y], [u, v]]
     :param x0: initial time value
     :param y0: initial state vector [[x, y], [u, v]]
@@ -25,7 +36,7 @@ def euler(x0, y0, h, n, func): # FIXME cannot be used with vectors
 
 # Updated RK2 integrator
 def rk2(x0, y0, h, n, func): # FIXME cannot be used with vectors
-    """
+    """ DEPRECIATED - DO NOT USE
     RK2 method adapted for state vector [[x, y], [u, v]]
     :param x0: initial time value
     :param y0: initial state vector [[x, y], [u, v]]
@@ -54,14 +65,15 @@ def rk4(t0: float,
         h: float, 
         n: int, 
         func):
-    """
-    RK4 method adapted for state vector [[x, y], [u, v]]
-    :param x0: initial time value
-    :param y0: initial state vector [[x, y], [u, v]]
-    :param h: step size (time step)
-    :param n: number of steps
-    :param func: RHS of differential equation
-    :returns: x array, solution array
+    """RK4 method adapted for state vector [[x, y], [u, v]]
+    @ params
+        - x0: initial time value
+        - y0: initial state vector [[x, y], [u, v]]
+        - h: step size (time step)
+        - n: number of steps
+        - func: RHS of differential equation
+    @returns: 
+        - t, W: time and state (solution) arrays, 
     """
     time = np.zeros(n)
     W = np.zeros((n,) + np.shape(W0))
@@ -84,4 +96,5 @@ def rk4(t0: float,
 
 
 def integrator_type(x0, y0, h, n, func, int_type):
+    """DEPRECIATED - DO NOT USE"""
     return int_type(x0, y0, h, n, func)

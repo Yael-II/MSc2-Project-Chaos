@@ -38,9 +38,15 @@ def plot_poincare_sections(filelist: list, title:str = "") -> int:
                             for file in filelist])
     filelist = np.array(filelist)[orderlist]
     N = len(filelist)
-    fig, axs = plt.subplot_mosaic("ABC\nDEF")
-    axs = list(axs.values())
-    fig.suptitle(title)
+    #fig, axs = plt.subplot_mosaic("ABC\nDEF")
+    fig1, axs1 = plt.subplot_mosaic("AB")
+    fig2, axs2 = plt.subplot_mosaic("CD")
+    fig3, axs3 = plt.subplot_mosaic("EF")
+
+    axs = list(axs1.values()) + list(axs2.values()) + list(axs3.values())
+    fig1.suptitle(title)
+    fig2.suptitle(title)
+    fig3.suptitle(title)
     for i in range(N):
         ax = axs[i]
         filename = filelist[i]
@@ -64,8 +70,11 @@ def plot_poincare_sections(filelist: list, title:str = "") -> int:
     if "linear" in title: kind = "linear"
     elif "parallel" in title: kind = "parallel"
     else: kind = "error"
-    fig.savefig("pcs_{}.pdf".format(kind))
+    fig1.savefig("pcs_zoom_1_{}.pdf".format(kind))
+    fig2.savefig("pcs_zoom_2_{}.pdf".format(kind))
+    fig3.savefig("pcs_zoom_3_{}.pdf".format(kind))
     return 0
+
 print("\033[32m" 
       + "[P]arallel or [L]inear algorithm result, or [B]oth?" 
       + "\033[0m")
