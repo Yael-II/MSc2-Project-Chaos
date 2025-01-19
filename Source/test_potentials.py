@@ -33,7 +33,7 @@ def kepler(W):
     ax.set_xlabel("$x$")
     ax.set_ylabel("$y$")
 
-    fig.savefig("pot_kepler.png")
+    fig.savefig("Figs/pot_kepler.png")
     return 0
 
 def hh(W):
@@ -49,7 +49,7 @@ def hh(W):
     ax.set_xlabel("$x$")
     ax.set_ylabel("$y$")
 
-    fig.savefig("pot_hh.png")
+    fig.savefig("Figs/pot_hh.png")
     return 0
 
 if __name__ == "__main__":

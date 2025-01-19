@@ -64,7 +64,7 @@ def plot_poincare_sections(filelist: list, title:str = "") -> int:
     if "linear" in title: kind = "linear"
     elif "parallel" in title: kind = "parallel"
     else: kind = "error"
-    fig.savefig("pcs_{}.pdf".format(kind))
+    fig.savefig("Figs/pcs_{}.pdf".format(kind))
     return 0
 print("\033[32m" 
       + "[P]arallel or [L]inear algorithm result, or [B]oth?" 

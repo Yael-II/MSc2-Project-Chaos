@@ -70,9 +70,9 @@ def plot_poincare_sections(filelist: list, title:str = "") -> int:
     if "linear" in title: kind = "linear"
     elif "parallel" in title: kind = "parallel"
     else: kind = "error"
-    fig1.savefig("pcs_zoom_1_{}.pdf".format(kind))
-    fig2.savefig("pcs_zoom_2_{}.pdf".format(kind))
-    fig3.savefig("pcs_zoom_3_{}.pdf".format(kind))
+    fig1.savefig("Figs/pcs_zoom_1_{}.pdf".format(kind))
+    fig2.savefig("Figs/pcs_zoom_2_{}.pdf".format(kind))
+    fig3.savefig("Figs/pcs_zoom_3_{}.pdf".format(kind))
     return 0
 
 print("\033[32m" 

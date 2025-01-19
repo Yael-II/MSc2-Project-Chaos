@@ -61,7 +61,7 @@ def plot_area(filelist: list, mu_c = 1e-4) -> int:
     ax.set_ylabel("Phase-space squared distance $\\mu$")
     ax.set_yscale("log")
     ax.legend()
-    fig.savefig("mu.pdf")
+    fig.savefig("Figs/mu.pdf")
 
     fig, ax = plt.subplots(1)
     N_reg = np.count_nonzero(mu < mu_c, axis=1)
@@ -70,7 +70,7 @@ def plot_area(filelist: list, mu_c = 1e-4) -> int:
     ax.scatter(E, Area, s=5, color="C0")
     ax.set_xlabel("Energy $E$")
     ax.set_ylabel("Area $N_\\mathrm{{reg}}/N_\\mathrm{{part}}$")
-    fig.savefig("area.pdf")
+    fig.savefig("Figs/area.pdf")
     return 0
 
 filelist = [f for f in os.listdir(OUT_DIR) if FILENAME_PREFIX in f]
