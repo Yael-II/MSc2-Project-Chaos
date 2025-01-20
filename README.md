@@ -51,6 +51,7 @@ The result of the simulations are saved in the Output directory, with the prefix
     - to test the evolution of a particle in a HH potential:
     ```bash
     ./test_evolution.sh
+    ./test_evolution_chaotic.sh
     ```
     - To test the generation of particles in this potential with a given energy 
     ```bash
