@@ -43,9 +43,21 @@ The result of the simulations are saved in the Output directory, with the prefix
 ```
 ./area.sh
 ```
-3. To run the tests, use
-    - `./test_potentials.sh` to test the potentials;
-    - `./test_evolution.sh` to test the evolution of a particle in a HH potential;
-    - `./test_initial_E.sh` to test the generation of particles in this potential with a given energy;
-    - `./time_poincare_sections.sh` to get the running time of both Poincaré sections computations (parallel vs. linear algorithms).
+3. To run the tests, use:
+    - To test the potentials
+    ```bash
+    ./test_potentials.sh
+    ```
+    - to test the evolution of a particle in a HH potential:
+    ```bash
+    ./test_evolution.sh
+    ```
+    - To test the generation of particles in this potential with a given energy 
+    ```bash
+    ./test_initial_E.sh
+    ```
+    - To get the running time of both Poincaré sections computations (parallel vs. linear algorithms)
+    ```bash
+    ./time_poincare_sections.sh
+    ```
 
