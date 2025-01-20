@@ -30,10 +30,22 @@ chmod u+x *.sh
 
 ## Usage
 
-##
+1. To compute the Poincaré sections, run:
+```bash
+./poincare_sections.sh
+```
+and then, enter `P` to plot only the "Parallel" output. Alternatively, to run the linear algorithm (without parallel array computing; much more slower), use:
+```
+./poincare_sections_linear.sh
+```
+The result of the simulations are saved in the Output directory, with the prefix `poincare_section_parallel_` or `poincare_section_linear_` followed by `1/E` (e.g. `12` for `E = 1/12`). The ASCII file contains all the Poincare section points (y on the first line, v on the second line) separated by blank spaces.
+2. To compute the area above and below the critical squared phase--space distance, use:
+```
+./area.sh
+```
+3. To run the tests, use
+    - `./test_potentials.sh` to test the potentials;
+    - `./test_evolution.sh` to test the evolution of a particle in a HH potential;
+    - `./test_initial_E.sh` to test the generation of particles in this potential with a given energy;
+    - `./time_poincare_sections.sh` to get the running time of both Poincaré sections computations (parallel vs. linear algorithms).
 
-## Main Poincaré Sections (Linear and Parallel)
-
-...
-
-The result of the simulation is saved in the Output directory, with the prefix `poincare_section_linear_` followed by 1/E (e.g. 12 for E = 1/12). The ASCII file contains all the Poincare section points (y on the first line, v on the second line) separated by blank spaces.

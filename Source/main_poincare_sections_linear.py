@@ -73,7 +73,7 @@ def compute_poincare_sections_linear(E: float,
         W_part = W_all_part[:,:,i]
         
         # Perform integration
-        t_part, coord_part = itg.rk4(0, W_part, h, N_inter, pot.hh_evolution)
+        t_part, coord_part = itg.rk4(0, W_part, h, N_iter, pot.hh_evolution)
 
         # Extract positions and velocities
         x_part = coord_part[:, 0, 0]
