@@ -35,27 +35,35 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
-import integrator as intg       #  integrator module
-import kepler_orbit as kep      # Analytical & numeric Kepler functions
-import initial_conditions as ic  # For initial condition
+import integrator as itg
+import initial_conditions as init
+import potentials as pot
+import energies as ene
+
+from matplotlib.patches import ConnectionPatch
+
+if "YII_1" in plt.style.available: plt.style.use("YII_1")
 
 # ----------------------------
 # 1. Setup & global parameters
 # ----------------------------
-t0      = 0.0
+t0 = 0.0
 T_final = 8.0
-y0      = ic.one_part(1, 0, 0, 1)  # [x, y, vx, vy]
-
+W0 = init.one_part(1, 0, 0, 1)  # [x, y, vx, vy]
 
 h_range = np.logspace(-3.5, -0.1, 25)
+h_range = np.append(h_range, 0.001)
 
 # For plotting lines/colors
 methods = [
-    ("Euler", intg.euler, 'o--', 'red'),
-    ("RK2",   intg.rk2,   's--', 'royalblue'),
-    ("RK4",   intg.rk4,   '^--', 'limegreen')
+    ("Euler", itg.euler, 'o--', 'C0'),
+    ("RK2",   itg.rk2,   's--', 'C2'),
+    ("RK4",   itg.rk4,   '^--', 'C3')
 ]
-colors = {'Analytical': 'navy', 'Euler': 'red', 'RK2': 'royalblue', 'RK4': 'limegreen'}
+colors = {'Analytical': 'k', 
+          'Euler': 'C0', 
+          'RK2': 'C2',
+          'RK4': 'C3'}
 
 # Compute machine epsilon
 eps = 1.0
@@ -70,12 +78,18 @@ time_euler, time_rk2, time_rk4 = [], [], []
 # ------------------------------------------
 # 2. Main loop over step sizes h in h_range
 # ------------------------------------------
+
+fig, ax = plt.subplots(1)
+
 for h in h_range:
+    ax.cla()
     N = int(T_final / h)
 
     # Analytical solution
-    t_ana, pos_ana, vel_ana, en_ana = kep.kepler_analytical_orb(y0, h, N)
-    E_analytical_final = en_ana[-1]
+    t_ana, W_ana = itg.kepler_analytical(t0, W0, h, N)
+    W_ana_E = np.swapaxes(W_ana, 0, 2)
+    W_ana_E = np.swapaxes(W_ana_E, 0, 1)
+    E_analytical_final = ene.total(W_ana_E, pot.kepler_potential)
 
     # Numerical integrators + timing
     all_solutions = {}
@@ -85,76 +99,167 @@ for h in h_range:
         [time_euler, time_rk2, time_rk4]
     ):
         start_time = time.time()
-        t_num, y_num = intg.integrator_type(t0, y0, h, N, kep.kepler_orbnum, method)
+        t_num, W_num = itg.integrator_type(t0, W0, h, N, pot.kepler_evolution, method)
         elapsed = time.time() - start_time
 
         store_t.append(elapsed)
-
+        
         # Final energy error
-        en_num = kep.kepler_enrgnum(y_num)
-        E_numerical_final = en_num[-1]
-        store_err.append(abs(E_analytical_final - E_numerical_final))
+        W_num_E = np.swapaxes(W_num, 0, 2)
+        W_num_E = np.swapaxes(W_num_E, 0, 1)
+        E_numerical_final = ene.total(W_num_E, pot.kepler_potential)
+        store_err.append(np.max(abs(E_analytical_final - E_numerical_final)))
 
-        all_solutions[label] = y_num
+        all_solutions[label] = W_num
 
     # Orbit plot (optional, can comment out if too many figures)
     eu_vals  = all_solutions["Euler"]
     rk2_vals = all_solutions["RK2"]
     rk4_vals = all_solutions["RK4"]
 
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.plot(pos_ana[:, 0], pos_ana[:, 1], '-.', color=colors['Analytical'],
-            label="Analytical", zorder=4)
-    ax.plot(eu_vals[:, 0, 0],  eu_vals[:, 0, 1],  color=colors['Euler'],  label="Euler")
-    ax.plot(rk2_vals[:, 0, 0], rk2_vals[:, 0, 1], color=colors['RK2'],    label="RK2")
-    ax.plot(rk4_vals[:, 0, 0], rk4_vals[:, 0, 1], color=colors['RK4'],    label="RK4")
-    ax.set_title(f"Orbit for dt = {h:.4g}")
-    ax.set_xlabel("x position(reduced units)")
-    ax.set_ylabel("y position(reduced units)")
-    ax.legend(loc="best")
-    ax.grid(True, which='both', ls='--', alpha=0.5)
-    plt.tight_layout()
-    plt.savefig(f"orbit_dt_{h:.4g}.png", dpi=300, bbox_inches='tight')
-    plt.show()
+
+    ax.plot(W_ana[:, 0, 0], 
+            W_ana[:, 0, 1],
+            "-.", 
+            color=colors['Analytical'],
+            label="Analytical", 
+            zorder=4)
+    ax.plot(eu_vals[:, 0, 0],  
+            eu_vals[:, 0, 1],  
+            "-",
+            color=colors['Euler'],  
+            label="Euler")
+    ax.plot(rk2_vals[:, 0, 0],
+            rk2_vals[:, 0, 1], 
+            "--",
+            color=colors['RK2'],    
+            label="RK2")
+    ax.plot(rk4_vals[:, 0, 0], 
+            rk4_vals[:, 0, 1], 
+            ":",
+            color=colors['RK4'],    
+            label="RK4")
+
+    ax.set_title("$\\Var{{t}} = {:.4f}$".format(h))
+    ax.set_xlabel("$x$")
+    ax.set_ylabel("$y$")
+    ax.set_aspect("equal")
+    ax.legend(loc="upper right")
+    fig.tight_layout()
+    fig.savefig("Figs/orbit_dt_{:.4f}.pdf".format(h))
+
+    if h == h_range[-1]:
+        mosaic = ("AB\n"
+                  "AC")
+        fig, axs = plt.subplot_mosaic(mosaic)
+        axs = list(axs.values())
+        for i in [0,1,2]:
+            axs[i].plot(W_ana[:, 0, 0], 
+                       W_ana[:, 0, 1],
+                       "-.", 
+                       color=colors['Analytical'],
+                       label="Analytical")
+            axs[i].plot(eu_vals[:, 0, 0],  
+                       eu_vals[:, 0, 1],  
+                       "-",
+                       color=colors['Euler'],  
+                       label="Euler")
+            axs[i].plot(rk2_vals[:, 0, 0],
+                       rk2_vals[:, 0, 1], 
+                       "--",
+                       color=colors['RK2'],    
+                       label="RK2")
+            axs[i].plot(rk4_vals[:, 0, 0], 
+                       rk4_vals[:, 0, 1], 
+                       ":",
+                       color=colors['RK4'],    
+                       label="RK4")
+
+            axs[i].set_aspect("equal")
+
+        fig.suptitle("$\\Var{{t}} = {:.4f}$".format(h))
+        axs[0].set_xlabel("$x$")
+        axs[0].set_ylabel("$y$")
+        axs[0].legend(loc="upper left")
+
+        win_1 = 0.02
+        axs[1].set_xlim(0 - win_1, 0 + win_1)
+        axs[1].set_ylim(1 - win_1, 1 + win_1)
+        #axs[0].indicate_inset_zoom(axs[1], lw=1)
+        win_2 = 1e-6
+        axs[2].set_xlim(0 - win_2, 0 + win_2)
+        axs[2].set_ylim(1 - win_2, 1 + win_2)
+        #axs[1].indicate_inset_zoom(axs[2], lw=1)
+
+        ln1 = ConnectionPatch(xyA=(0,1), xyB=(0-win_1,1+win_1), 
+                              coordsA="data", coordsB="data",
+                              axesA=axs[0], axesB=axs[1], 
+                              color="k", lw=1, alpha=0.5)
+        ln2 = ConnectionPatch(xyA=(0,1), xyB=(0-win_1,1-win_1), 
+                              coordsA="data", coordsB="data",
+                              axesA=axs[0], axesB=axs[1], 
+                              color="k", lw=1, alpha=0.5)
+        fig.add_artist(ln1)
+        fig.add_artist(ln2)
+
+        ln3 = ConnectionPatch(xyA=(0,1), xyB=(0-win_2,1+win_2), 
+                              coordsA="data", coordsB="data",
+                              axesA=axs[1], axesB=axs[2], 
+                              color="k", lw=1, alpha=0.5)
+        ln4 = ConnectionPatch(xyA=(0,1), xyB=(0+win_2,1+win_2), 
+                              coordsA="data", coordsB="data",
+                              axesA=axs[1], axesB=axs[2], 
+                              color="k", lw=1, alpha=0.5)
+        fig.add_artist(ln3)
+        fig.add_artist(ln4)
+        #fig.tight_layout()
+        fig.savefig("Figs/orbit_dt.pdf")
+
+
 
 # ---------------------------------------------------------------
 # 3. Summary Plots: CPU time and final energy error (Log-Log)
 # ---------------------------------------------------------------
 
 # --- Step size vs. CPU Time (Log-Log) ---
-fig, ax = plt.subplots(figsize=(8, 6))
-ax.loglog(h_range, time_euler, 'o--', color='red',       label="Euler")
-ax.loglog(h_range, time_rk2,   's--', color='royalblue', label="RK2")
-ax.loglog(h_range, time_rk4,   '^--', color='limegreen', label="RK4")
+fig, ax = plt.subplots()
+ax.plot(h_range[:-1], time_euler[:-1], 'o-', color='C0', label="Euler")
+ax.plot(h_range[:-1], time_rk2[:-1],   's--', color='C2', label="RK2")
+ax.plot(h_range[:-1], time_rk4[:-1],   '^:', color='C3', label="RK4")
 
-ax.set_xlabel(r"Step size $(\Delta t)$", fontsize=12)
-ax.set_ylabel("CPU Time (s)", fontsize=12)
-ax.set_title(r"$\Delta t$ vs. CPU Time ", fontsize=14)
-ax.minorticks_on()
-ax.grid(True, which="major", linestyle="--", linewidth=0.5, alpha=0.7)
-ax.grid(True, which="minor", linestyle=":", linewidth=0.5, alpha=0.5)
-ax.legend(loc="best", fontsize=12)
-plt.tight_layout()
-plt.savefig("dt_vs_cpu_time_loglog.png", dpi=300, bbox_inches='tight')
-plt.show()
+ax.set_xscale("log")
+ax.set_yscale("log")
+
+ax.set_xlabel("Step size $\\Var{{t}}$")
+ax.set_ylabel("CPU Time $t_\\mathrm{CPU}\\axunit{{s}}$")
+#ax.minorticks_on()
+#ax.grid(True, which="major", linestyle="--", linewidth=0.5, alpha=0.7)
+#ax.grid(True, which="minor", linestyle=":", linewidth=0.5, alpha=0.5)
+ax.legend(loc="best")
+fig.tight_layout()
+fig.savefig("Figs/dt_vs_cpu_time_loglog.pdf")
 
 # --- Step size vs. Final Energy Error (Log-Log) ---
-fig, ax = plt.subplots(figsize=(8, 6))
-ax.loglog(h_range, err_euler, 'o--', color='red',       label="Euler")
-ax.loglog(h_range, err_rk2,   's--', color='royalblue', label="RK2")
-ax.loglog(h_range, err_rk4,   '^--', color='limegreen', label="RK4")
+fig, ax = plt.subplots()
 
+ax.plot(h_range[:-1], err_euler[:-1], 'o-', color='C0', label="Euler")
+ax.plot(h_range[:-1], err_rk2[:-1],   's--', color='C2', label="RK2")
+ax.plot(h_range[:-1], err_rk4[:-1],   '^:', color='C3', label="RK4")
+
+ax.set_xscale("log")
+ax.set_yscale("log")
 # Machine Epsilon line (horizontal)
-ax.axhline(eps, color='darkred', ls='--', label='Machine Epsilon')
+ax.axhline(eps, color='darkred', ls='-.', 
+           label='Machine precision $\\epsilon$')
 
-ax.set_xlabel(r"Step size $(\Delta t)$", fontsize=12)
-ax.set_ylabel(r"$|E_{\mathrm{analytical}} - E_{\mathrm{numerical}}|$", fontsize=12)
-ax.set_title(r"$\Delta t$ vs. Final Energy Error ", fontsize=14)
-ax.minorticks_on()
-ax.grid(True, which="major", linestyle="--", linewidth=0.5, alpha=0.7)
-ax.grid(True, which="minor", linestyle=":", linewidth=0.5, alpha=0.5)
+ax.set_xlabel("Step size $\\Var{{t}}$")
+ax.set_ylabel("$\\abs{{E_{\\mathrm{analytical}} - E_{\\mathrm{numerical}}}}$")
+#ax.minorticks_on()
+#ax.grid(True, which="major", linestyle="--", linewidth=0.5, alpha=0.7)
+#ax.grid(True, which="minor", linestyle=":", linewidth=0.5, alpha=0.5)
 
 # Ensure 'Machine Epsilon' is in legend
+"""
 handles, labels = ax.get_legend_handles_labels()
 if 'Machine Epsilon' not in labels:
     import matplotlib.lines as mlines
@@ -162,8 +267,9 @@ if 'Machine Epsilon' not in labels:
     handles.append(h_me)
     labels.append('Machine Epsilon')
 ax.legend(handles, labels, loc="best", fontsize=12)
-
-plt.tight_layout()
-plt.savefig("timestep_vs_final_energy_error_loglog1.png", dpi=300, bbox_inches='tight')
+"""
+ax.legend()
+fig.tight_layout()
+fig.savefig("Figs/timestep_vs_final_energy_error_loglog1.pdf")
 plt.show()
 

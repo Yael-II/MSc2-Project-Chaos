@@ -61,6 +61,25 @@ def kepler_potential(W_grid: np.ndarray,
     R = np.sqrt(X**2 + Y**2)
     return -1/R
 
+def kepler_evolution(t: np.ndarray, W: np.ndarray):
+    """Computes the evolution from the Kepler potential derivative
+    @params
+        - t: Time (not used)
+        - W: Phase space vector
+    &returns 
+        - dot W: Time derivative of the phase space vector
+    """
+    X = W[0 ,0]
+    Y = W[0, 1]
+    U = W[1, 0]
+    V = W[1, 1]
+    R = np.sqrt(X**2 + Y**2)
+    DX = U 
+    DY = V
+    DU = -X/R**3
+    DV = -Y/R**3
+    return np.array([[DX, DY], [DU, DV]])
+
 def hh_potential(W_grid: np.ndarray, 
                  position_only=False) -> np.ndarray:
     """Computes the Hénon-Heiles potential.
@@ -101,5 +120,4 @@ def hh_evolution(t: np.ndarray, W: np.ndarray):
     DY = V
     DU = -(2*X*Y + X)
     DV = -(X**2 - Y**2 + Y)
-
     return np.array([[DX, DY], [DU, DV]])
