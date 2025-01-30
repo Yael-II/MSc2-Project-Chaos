@@ -64,7 +64,7 @@ def hh(W):
     Y = W[1]
     POT = pot.hh_potential(W, position_only=True)
     fig, ax = plt.subplots(1)
-    ax.set_title("Hénon–Heils potential")
+    ax.set_title("Hénon--Heils potential")
     pcm = ax.pcolormesh(X, Y, POT)
     fig.colorbar(pcm, label="potential")
     ax.set_aspect("equal")
@@ -73,7 +73,6 @@ def hh(W):
 
     fig.savefig("Figs/pot_hh.png")
     return 0
-
 if __name__ == "__main__":
     kepler(W)
     hh(W)

@@ -140,7 +140,7 @@ for h in h_range:
             color=colors['RK4'],    
             label="RK4")
 
-    ax.set_title("$\\Var{{t}} = {:.4f}$".format(h))
+    ax.set_title("$h = {:.4f}$".format(h))
     ax.set_xlabel("$x$")
     ax.set_ylabel("$y$")
     ax.set_aspect("equal")
@@ -177,7 +177,7 @@ for h in h_range:
 
             axs[i].set_aspect("equal")
 
-        fig.suptitle("$\\Var{{t}} = {:.4f}$".format(h))
+        #fig.suptitle("$\\Var{{t}} = {:.4f}$".format(h))
         axs[0].set_xlabel("$x$")
         axs[0].set_ylabel("$y$")
         axs[0].legend(loc="upper left")
