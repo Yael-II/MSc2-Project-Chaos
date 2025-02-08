@@ -5,6 +5,8 @@ Moussouni, Yaël (MSc student) & Bhat, Junaid Ramzan (MSc student)
 Université de Strasbourg, CNRS, Observatoire astronomique de Strasbourg, 
 UMR 7550, F-67000, Strasbourg, France
 
+
+**Moved to https://codeberg.org/Yael-II/MSc2-Project-Chaos/**
 ## Requirements
 
 The project requires `python` (tested with version 3.13.1), with the `venv` module and `pip`, a `bash` interpreter (`/usr/bin/env bash` by default), and at least 450 kiB of available space.
